@@ -2,6 +2,10 @@ version: '2'
 services:
  postgres:
   build: ./postgres
+  environment:
+    - POSTGRES_DB=dnarepairdb
+    - POSTGRES_PASSWORD=docker
+    - POSTGRES_USER=docker
   volumes:
     - ./dockerfiles/postgresql:/var/lib/postgresql
   network_mode: "service:nginx"
