@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block page_title %}
+
+    <title>Contact</title>
+
+{% endblock %}
+
+{% block content %}
+
+    {% if confirm_message %}
+        <h1>{{ title }}</h1>
+        <p>{{ confirm_message }}</p>
+
+    {% endif %}
+    {% if form %}
+
+        </br>
+        <section class="panel" style="width: 100%">
+            <header class="panel-heading">Contact Form</header>
+            <div class="panel-body">
+                <form class="form" method="POST" action=''> {% csrf_token %}
+                    {{ form|crispy }}
+                    <input type="submit" value="Send" class="btn btn-primary"/>
+                </form>
+            </div>
+        </section>
+    {% endif %}
+{%  endblock %}

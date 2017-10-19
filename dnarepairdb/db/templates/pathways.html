@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block  page_title %}
+
+    <title>{{ current_pathway.name }}</title>
+
+{% endblock %}
+
+{% block content %}
+
+    <h1>Data for {{ current_pathway.name }} goes here</h1>
+    <div id="pathway_table">
+        <table>
+            <thead>
+                <td>GENE</td>
+                {% for organism in organisms %}
+                    <td>{{ organism.specific_name }}</td>
+                {% endfor %}
+            </thead>
+            {% for gene in genes_inside_pathway %}
+            <tr>
+                <td>{{ gene }}</td>
+            </tr>
+            {% endfor %}
+
+        </table>
+    </div>
+
+
+{%  endblock %}
