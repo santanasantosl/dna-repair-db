@@ -26,7 +26,7 @@ services:
  nginx:
   build: ./nginx
   ports:
-   - "443:443" # for nginx
-   - "5432:5432" # for postgres
+   - "447:443" # for nginx
+   - "5437:5432" # for postgres
   volumes:
-   - ./dockerfiles/static:/media
+   - ./dockerfiles:/media/dnarepairdb
