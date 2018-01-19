@@ -5,6 +5,17 @@ from django.db import models
 
 # Create your models here.
 
+
+class Organism(models.Model):
+
+    abbreviation = models.CharField(max_length=3, null=False)
+    specific_name = models.CharField(max_length=30, null=False)
+    common_name = models.CharField(max_length=50, null=True)
+
+    def __unicode__(self):
+        return self.abbreviation
+
+
 class Pathway(models.Model):
 
     name = models.CharField(max_length=40, null=False)
@@ -13,23 +24,23 @@ class Pathway(models.Model):
     def __unicode__(self):
         return self.name
 
+
 class Gene(models.Model):
 
     symbol = models.CharField(max_length=20)
     name = models.CharField(max_length=100, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
-    pathway = models.ForeignKey(Pathway)
+    organism = models.ForeignKey(Organism, null=True)
 
     def __unicode__(self):
         return self.symbol
 
-class Organism(models.Model):
 
-    abbreviation = models.CharField(max_length=3, null=False)
-    specific_name = models.CharField(max_length=30, null=False)
+class GenePathway(models.Model):
 
-    def __unicode__(self):
-        return self.abbreviation
+    gene = models.ForeignKey(Gene)
+    pathway = models.ForeignKey(Pathway)
+
 
 class Ortholog(models.Model):
 

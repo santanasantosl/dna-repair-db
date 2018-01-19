@@ -2,18 +2,24 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import render
+from .models import Pathway, Gene, Organism, Faculty, GenePathway
 
 # Create your views here.
+
 
 def home(request):
     context = locals()
     template = 'home.html'
-    return render(request, template, context)
+    organisms = Organism.objects.all().values_list('specific_name', flat=True)
+
+    organism_list = ", ".join(list(organisms))
+
+    return render(request, template, {'organism_list': organism_list})
 
 
 def pathways(request, pathwayid):
     pathway_rec = Pathway.objects.filter(id=pathwayid).get()
-    genes_inside_pathway = Gene.objects.filter(pathway=pathwayid)
+    genes_inside_pathway = GenePathway.objects.filter(pathway=pathwayid)
     organism = Organism.objects.all()
 
     context = locals()
@@ -21,6 +27,7 @@ def pathways(request, pathwayid):
     return render(request, template, {'current_pathway': pathway_rec,
                                       'genes_inside_pathway': genes_inside_pathway,
                                       'organisms': organism})
+
 
 def orthologs(request):
     template = 'orthologs.html'
