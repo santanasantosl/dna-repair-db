@@ -49,7 +49,7 @@ class Ortholog(models.Model):
     symbol = models.CharField(max_length=20, null=True)
 
     def __unicode__(self):
-        return self.gene
+        return self.gene.symbol
 
 
 class Uniprot(models.Model):
@@ -73,14 +73,17 @@ class Pdb(models.Model):
 
 class Ncbi(models.Model):
 
-    geneid = models.CharField(max_length=15, null=False)
-    gi = models.CharField(max_length=15, null=False)
-    genebank = models.CharField(max_length=20, null=False)
-    refseq = models.CharField(max_length=15, null=False)
-    ortholog = models.ForeignKey(Ortholog, null=True)
+    geneid = models.CharField(max_length=15, null=True, blank=True, default=None)
+    gi = models.CharField(max_length=15, null=True, blank=True, default=None)
+    genebank = models.CharField(max_length=20, null=True, blank=True, default=None)
+    refseq = models.CharField(max_length=15, null=True, blank=True, default=None)
+    ortholog = models.ForeignKey(Ortholog, null=False, default=None)
 
     def __unicode__(self):
-        return self.geneid
+        if self.geneid is not None:
+            return self.geneid
+        else:
+            return self.ortholog.gene.symbol
 
 
 class Yeastdb(models.Model):
