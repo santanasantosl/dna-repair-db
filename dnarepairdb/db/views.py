@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import render
-from .models import Pathway, Gene, Organism, Faculty, GenePathway
+from .models import Pathway, Gene, Organism, Faculty, GenePathway, Ortholog, Ncbi, Uniprot, Pdb, Wormdb, Flybase, Yeastdb
 
 # Create your views here.
 
@@ -17,51 +17,119 @@ def home(request):
     return render(request, template, {'organism_list': organism_list})
 
 
+def all_pathways(request, pathwayid):
+    context = locals()
+    template = 'home.html'
+    organisms = Organism.objects.all().values_list('specific_name', flat=True)
+
+    organism_list = ", ".join(list(organisms))
+
+    return render(request, template, {'organism_list': organism_list})
+
+
 def pathways(request, pathwayid):
+
+    pathway_data = []
+
     pathway_rec = Pathway.objects.filter(id=pathwayid).get()
     genes_inside_pathway = GenePathway.objects.filter(pathway=pathwayid)
-    organism = Organism.objects.all()
+    organisms = Organism.objects.all()
 
-    context = locals()
+    for gene_pathway in genes_inside_pathway:
+        current_gene = gene_pathway.gene
+
+        gene_dict = dict()
+        for organism in organisms:
+            try:
+                ortholog = Ortholog.objects.get(gene=current_gene, organism=organism)
+                gene_dict[organism.abbreviation] = ortholog
+            except:
+                gene_dict[organism.abbreviation] = None
+        pathway_data.append(gene_dict)
+
     template = 'pathways.html'
     return render(request, template, {'current_pathway': pathway_rec,
                                       'genes_inside_pathway': genes_inside_pathway,
-                                      'organisms': organism})
+                                      'pathway_data': pathway_data,
+                                      'organisms': organisms})
 
 
-def orthologs(request):
+def all_orthologs(request):
+
+    context = locals()
+    template = 'home.html'
+    organisms = Organism.objects.all().values_list('specific_name', flat=True)
+
+    organism_list = ", ".join(list(organisms))
+
+    return render(request, template, {'organism_list': organism_list})
+
+
+def orthologs(request, orthologid):
+
     template = 'orthologs.html'
-    gene_rec = Gene.objects.all()
-    organism_rec = Organism.objects.all()
-    return render(request, template, {
-        'organisms': organism_rec})
 
-    # ortholog_table = dict()
-    #
-    # for gene in gene_rec:
-    #     for organism in organism_rec:
-    #
-    #         #ortholog_table[gene.symbol] = organism.abbreviation
-    #         current_ortholog_rec = Ortholog.objects.filter(organism_id=organism.id, gene_id=gene.id)
-    #         if current_ortholog_rec.count() > 0:
-    #
-    #             if ortholog_table.has_key(gene.symbol):
-    #                 ortholog_table[gene.symbol][organism.abbreviation] = current_ortholog_rec.symbol
-    #
-    #             else:
-    #                 ortholog_table[gene.symbol] = dict()
-    #                 ortholog_table[gene.symbol][organism.abbreviation] = current_ortholog_rec.symbol
-    #         elif current_ortholog_rec.count() == 0:
-    #             if ortholog_table.has_key(gene.symbol):
-    #                 ortholog_table[gene.symbol][organism.abbreviation] = ""
-    #
-    #             else:
-    #                 ortholog_table[gene.symbol] = list()
-    #                 ortholog_table[gene.symbol][organism.abbreviation] = ""
-    #
-    #
-    # return render(request, template, {
-    #     'organisms': organism_rec, 'ortholog_table': ortholog_table})
+    ortholog_obj = Ortholog.objects.get(id=orthologid)
+    gene_obj = ortholog_obj.gene
+    organism_obj = ortholog_obj.organisms
+
+    annotation_data = {}
+
+    # Get NCBI
+    try:
+        ncbi = Ncbi.objects.get(ortholog=ortholog_obj)
+        annotation_data['ncbi'] = ncbi
+    except:
+        pass
+
+    # Get Uniprot
+    try:
+        uniprot = Uniprot.objects.get(ortholog=ortholog_obj)
+        annotation_data['ncbi'] = ncbi
+    except:
+        pass
+
+    # Get PDB
+
+    pdb = Pdb.objects.filter(ortholog=ortholog_obj)
+    annotation_data['pdb'] = pdb
+
+    # Get wormdb
+    try:
+        wormdb = Wormdb.objects.get(ortholog=ortholog_obj)
+        annotation_data['wormdb'] = wormdb
+    except:
+        pass
+
+    # Get Flybase
+    try:
+        flybase = Flybase.objects.get(ortholog=ortholog_obj)
+        annotation_data['flybase'] = flybase
+    except:
+        pass
+
+    # Get Yeastdb
+    try:
+        yeastdb = Yeastdb.objects.get(ortholog=ortholog_obj)
+        annotation_data['yeastdb'] = yeastdb
+    except:
+        pass
+
+    # Get remaining orthologs
+    remaining_organisms = Organism.objects.all().exclude(organism_obj)
+
+    orthologs_data = dict()
+    for current_organism in remaining_organisms:
+        try:
+            current_ortholog = Ortholog.objects.filter(gene=gene_obj, organism=current_organism)
+            orthologs_data[current_ortholog.abbreviation] = current_ortholog
+        except:
+            pass
+
+    return render(request, template, {
+        'orthologs_data': orthologs_data,
+        'ortholog_obj': ortholog_obj,
+        'annotation_data': annotation_data})
 
 
 def faculty(request):

@@ -23,8 +23,10 @@ from contact.views import contact
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', views.home, name='Home'),
+    url(r'^pathways/$', views.all_pathways, name="all_pathways"),
     url(r'^pathways/(?P<pathwayid>\d+)/$', views.pathways, name="pathway"),
-    url(r'^orthologs/$', views.orthologs, name="ortholog"),
+    url(r'^orthologs/$', views.all_orthologs, name="all_orthologs"),
+    url(r'^orthologs/(?P<orthologid>\d+)/$', views.orthologs, name="ortholog"),
     url(r'^faculty/$', views.faculty, name="faculty"),
     url(r'^contact/$', contact, name="contact"),
 ]

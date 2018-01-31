@@ -8,20 +8,36 @@
 
 {% block content %}
 
-    <h1>Data for {{ current_pathway.name }} goes here</h1>
+    <h1>{{ current_pathway.name }}</h1>
     <div id="pathway_table">
-        <table>
+        <table class="table-bordered" style="width: fit-content">
             <thead>
-                <td>GENE</td>
-                {% for organism in organisms %}
-                    <td>{{ organism.specific_name }}</td>
-                {% endfor %}
+                <tr>
+                    <th>Pathway</th>
+                    <th>Homo sapiens</th>
+                    <th>Mus musculus</th>
+                    <th>Caenorhabditis elegans</th>
+                    <th>Drosophila melanogaster</th>
+                    <th>Arabdopsis thaliana</th>
+                    <th>Saccharomyces cerevisiae</th>
+                    <th>Schizosaccharomyces pombe</th>
+                </tr>
             </thead>
-            {% for gene in genes_inside_pathway %}
-            <tr>
-                <td>{{ gene }}</td>
-            </tr>
-            {% endfor %}
+            <tbody>
+                {% for data in pathway_data %}
+                <tr>
+                    <td>{{ current_pathway.name }}</td>
+                    <td>{{ data.hsa.symbol }}</td>
+                    <td>{{ data.mmu.symbol }}</td>
+                    <td>{{ data.cel.symbol }}</td>
+                    <td>{{ data.dme.symbol }}</td>
+                    <td>{{ data.ath.symbol }}</td>
+                    <td>{{ data.sce.symbol }}</td>
+                    <td>{{ data.spo.symbol }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
 
         </table>
     </div>
