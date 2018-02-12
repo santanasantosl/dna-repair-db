@@ -27,13 +27,13 @@
                 {% for data in pathway_data %}
                 <tr>
                     <td>{{ current_pathway.name }}</td>
-                    <td><a href="/orthologs/{{data.hsa.id}}">{{ data.hsa.symbol }}</a> </td>
-                    <td><a href="/orthologs/{{ data.mmu.id }}">{{ data.mmu.symbol}}</a></td>
-                    <td><a href="/orthologs/{{ data.cel.id }}">{{ data.mmu.symbol}}</a></td>
-                    <td><a href="/orthologs/{{ data.dme.id }}">{{ data.dme.symbol}}</a></td>
-                    <td><a href="/orthologs/{{ data.ath.id }}">{{ data.ath.symbol}}</a></td>
-                    <td><a href="/orthologs/{{ data.sce.id }}">{{ data.sce.symbol}}</a></td>
-                    <td><a href="/orthologs/{{ data.spo.id }}">{{ data.spo.symbol}}</a></td>
+                    <td><a href="/ortholog/{{data.hsa.id}}">{{ data.hsa.symbol }}</a> </td>
+                    <td><a href="/ortholog/{{ data.mmu.id }}">{{ data.mmu.symbol}}</a></td>
+                    <td><a href="/ortholog/{{ data.cel.id }}">{{ data.mmu.symbol}}</a></td>
+                    <td><a href="/ortholog/{{ data.dme.id }}">{{ data.dme.symbol}}</a></td>
+                    <td><a href="/ortholog/{{ data.ath.id }}">{{ data.ath.symbol}}</a></td>
+                    <td><a href="/ortholog/{{ data.sce.id }}">{{ data.sce.symbol}}</a></td>
+                    <td><a href="/ortholog/{{ data.spo.id }}">{{ data.spo.symbol}}</a></td>
                 </tr>
                 {% endfor %}
             </tbody>
