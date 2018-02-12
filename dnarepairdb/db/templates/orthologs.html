@@ -8,26 +8,46 @@
 
 {% block content %}
 
-    <table class="table-bordered">
-        <thead>
-            <tr>
-            {% for organism in organisms %}
-                <th>{{ organism.abbreviation }}</th>
-            {% endfor %}
-            </tr>
-        </thead>
-        <tbody>
+     <h1>Detailed Gene Information</h1></br>
+     <p><strong>Organism: </strong>{{ ortholog_obj.organism.specific_name }}</p>
+     <p><strong>Gene Name: </strong>{{ ortholog_obj.symbol }}</p>
+     {# Display NCBI Annotations #}
+     {% if annotation_data.ncbi.geneid %}
+         <p><strong>NCBI Gene ID: </strong><a href="https://www.ncbi.nlm.nih.gov/gene/{{ annotation_data.ncbi.geneid }}">{{ annotation_data.ncbi.geneid }}</a></p>
+     {% endif %}
+     {% if annotation_data.ncbi.gi %}
+         <p><strong>NCBI-gi: </strong><a href="https://www.ncbi.nlm.nih.gov/protein/{{ annotation_data.ncbi.gi }}">{{ annotation_data.ncbi.gi }}</a></p>
+     {% endif %}
+     {% if annotation_data.ncbi.refseq %}
+         <p><strong>RefSeq: </strong><a href="https://www.ncbi.nlm.nih.gov/nuccore/{{ annotation_data.ncbi.refseq }}">{{ annotation_data.ncbi.refseq }}</a></p>
+     {% endif %}
+     {% if annotation_data.ncbi.genebank %}
+          <p><strong>GenBank: </strong><a href="https://www.ncbi.nlm.nih.gov/protein/{{ annotation_data.ncbi.genebank }}">{{ annotation_data.ncbi.genebank }}</a></p>
+     {% endif %}
+     {# Display Uniprot #}
+     {% if annotation_data.uniprot %}
+        <p><strong>Uniprot: </strong><a href="http://www.uniprot.org/uniprot/{{ annotation_data.uniprot.uniprot_id }}">{{ annotation_data.uniprot.uniprot_id }}</a></p>
+     {% endif %}
+     {# Display Flybase  #}
+     {% if annotation_data.flybase %}
+        <p>{{ annotation_data.flybase.flybase_id }}</p>"
+     {% endif %}
+     {# Display Wormdb #}
+     {% if annotation_data.wormdb %}
+        <p>{{annotation_data.wormdb.wormdb_id }}</p>
+     {% endif %}
+     {# Display Yeastdb #}
+     {% if annotation_data.yeastdb %}
+        <p>{{ annotation_data.yeastdb.yeastdb_id }}</p>
+     {% endif %}
 
-            <tr>
-                <td></td>
-            </tr>
-
-        </tbody>
-    </table>
-
-    #{% for symbol in ortholog_table %}
-        <p>{{ ortholog_table }}</p>
-
-    #{% endfor %}
+    <br>
+    <h1>Orthologs</h1>
+    <br>
+    {% for ortholog in orthologs_data %}
+        <p><strong>Organism: </strong> {{ ortholog.organism.specific_name  }}</p>
+        <p><strong>Gene Name: </strong><a href="/orthologs/{{ortholog.id}}/">{{ortholog.symbol}}</a></p>
+        </br>
+    {% endfor %}
 
 {%  endblock %}

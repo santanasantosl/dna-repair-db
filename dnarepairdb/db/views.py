@@ -71,7 +71,7 @@ def orthologs(request, orthologid):
 
     ortholog_obj = Ortholog.objects.get(id=orthologid)
     gene_obj = ortholog_obj.gene
-    organism_obj = ortholog_obj.organisms
+    organism_obj = ortholog_obj.organism
 
     annotation_data = {}
 
@@ -85,7 +85,7 @@ def orthologs(request, orthologid):
     # Get Uniprot
     try:
         uniprot = Uniprot.objects.get(ortholog=ortholog_obj)
-        annotation_data['ncbi'] = ncbi
+        annotation_data['uniprot'] = uniprot
     except:
         pass
 
@@ -116,20 +116,28 @@ def orthologs(request, orthologid):
         pass
 
     # Get remaining orthologs
-    remaining_organisms = Organism.objects.all().exclude(organism_obj)
+    remaining_organisms = Organism.objects.exclude(id=organism_obj.id)
 
     orthologs_data = dict()
     for current_organism in remaining_organisms:
         try:
-            current_ortholog = Ortholog.objects.filter(gene=gene_obj, organism=current_organism)
-            orthologs_data[current_ortholog.abbreviation] = current_ortholog
+            current_ortholog = Ortholog.objects.get(gene=gene_obj, organism=current_organism)
+            orthologs_data[current_organism.abbreviation] = current_ortholog
         except:
             pass
 
+    sorted_orthologs = orthologs_data.keys()
+    sorted_orthologs.sort()
+
+    sorted_ortholog_data = list()
+    for ortholog in sorted_orthologs:
+        sorted_ortholog_data.append(orthologs_data[ortholog])
+
+
     return render(request, template, {
-        'orthologs_data': orthologs_data,
+        'orthologs_data': sorted_ortholog_data,
         'ortholog_obj': ortholog_obj,
-        'annotation_data': annotation_data})
+        'annotation_data': annotation_data,})
 
 
 def faculty(request):

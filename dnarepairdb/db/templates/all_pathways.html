@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block  page_title %}
+
+    <title>Orthologs</title>
+
+{% endblock %}
+
+{% block content %}
+
+    <table class="table-bordered">
+        <thead>
+            <tr>
+            {% for organism in organisms %}
+                <th>{{ organism.abbreviation }}</th>
+            {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+
+            <tr>
+                <td></td>
+            </tr>
+
+        </tbody>
+    </table>
+
+    #{% for symbol in ortholog_table %}
+        <p>{{ ortholog_table }}</p>
+
+    #{% endfor %}
+
+{%  endblock %}
