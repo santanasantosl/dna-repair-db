@@ -8,26 +8,24 @@
 
 {% block content %}
 
-    <table class="table-bordered">
-        <thead>
-            <tr>
-            {% for organism in organisms %}
-                <th>{{ organism.abbreviation }}</th>
-            {% endfor %}
-            </tr>
-        </thead>
-        <tbody>
+    <div id="orthologs_table">
+        <table class="table-bordered" style="width: fit-content">
+            <thead>
+                <tr>
+                    <th>Pathway</th>
+                    <th>{{ organism.specific_name }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in data %}
+                <tr>
+                    <td><a href="/pathways/{{ entry.pathway.id }}">{{ entry.pathway }}</a></td>
+                    <td><a href="/orthologs/{{ entry.ortholog.id }}">{{ entry.ortholog }}</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
 
-            <tr>
-                <td></td>
-            </tr>
-
-        </tbody>
-    </table>
-
-    #{% for symbol in ortholog_table %}
-        <p>{{ ortholog_table }}</p>
-
-    #{% endfor %}
+        </table>
+    </div>
 
 {%  endblock %}

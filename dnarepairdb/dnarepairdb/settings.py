@@ -78,6 +78,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'db.context_processors.get_pathways_processor',
+                'db.context_processors.get_organisms_processor',
             ],
         },
     },

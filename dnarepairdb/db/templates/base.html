@@ -93,13 +93,17 @@
                           {% endfor %}
                       </ul>
                   </li>
-                  <li>
-                      <a class="" href="/orthologs">
+                  <li class="sub-menu">
+                      <a href="javascript:;" class="">
                           <i class="glyphicon glyphicon-tree-conifer"></i>
                           <span>Orthologs</span>
-
+                          <span class="menu-arrow arrow_carrot-right"></span>
                       </a>
-
+                      <ul class="sub">
+                          {% for organism_rec in all_organisms %}
+                              <li><a class="" href="/orthologs/{{ organism_rec.id }}">{{ organism_rec.specific_name }}</a></li>
+                          {% endfor %}
+                      </ul>
                   </li>
                   <li>
                       <a class="" href="/faculty">

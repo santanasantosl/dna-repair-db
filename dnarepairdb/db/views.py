@@ -54,15 +54,22 @@ def pathways(request, pathwayid):
                                       'organisms': organisms})
 
 
-def all_orthologs(request):
+def all_orthologs(request, organismid):
 
     context = locals()
-    template = 'home.html'
-    organisms = Organism.objects.all().values_list('specific_name', flat=True)
+    template = 'all_orthologs.html'
 
-    organism_list = ", ".join(list(organisms))
+    data = []
 
-    return render(request, template, {'organism_list': organism_list})
+    organism_obj = Organism.objects.get(id=organismid)
+    orthologs = Ortholog.objects.filter(organism=organism_obj)
+    for ortholog in orthologs:
+        gene_pathway = GenePathway.objects.get(gene=ortholog.gene)
+        pathway = gene_pathway.pathway
+        result_dict = {'ortholog':ortholog, 'pathway': pathway}
+        data.append(result_dict)
+
+    return render(request, template, {'data':data, 'organism': organism_obj})
 
 
 def orthologs(request, orthologid):
