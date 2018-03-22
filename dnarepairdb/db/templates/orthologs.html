@@ -40,6 +40,14 @@
      {% if annotation_data.yeastdb %}
         <p>{{ annotation_data.yeastdb.yeastdb_id }}</p>
      {% endif %}
+    {# Display PDB files #}
+    {% if annotation_data.pdb %}
+        <p><strong>PDB:</strong>
+        {% for pdb in annotation_data.pdb %}
+            <a href="{{pdb.pdb_link}}">{{ pdb.pdb_id|upper}}</a>
+        {% endfor %}
+        </p>
+    {% endif %}
 
     <br>
     <h1>Orthologs</h1>

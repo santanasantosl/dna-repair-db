@@ -66,6 +66,7 @@ class Pdb(models.Model):
     ortholog = models.ForeignKey(Ortholog, null=False)
     pdb_id = models.CharField(max_length=15, null=False)
     title = models.TextField(null=True)
+    pdb_link = models.TextField(null=True)
 
     def __unicode__(self):
         return self.pdb_id
