@@ -58,14 +58,19 @@
 
             <div class="nav search-row" id="top_menu">
                 <!--  search form start -->
-                <ul class="nav top-menu">                    
-                    <li>
-                        <form class="navbar-form">
-                            <input class="form-control" placeholder="Search" type="text">
-                        </form>
-                    </li>                    
-                </ul>
-                <!--  search form end -->                
+                <!-- START Search form-->
+                <div class="nav-search-bar nav col-md-12 pull-left" style="margin-left:10px;">
+
+                    <div class="has-feedback">
+                        <div class="controls search-form">
+                            <input type="text" placeholder="Search..." class="nav-search-bar-input form-control" autocomplete="off" />
+                            <span class="nav-search-bar-spinner fa fa-spinner fa-spin form-control-feedback" style="display:none;"></span>
+                            <ul class="dropdown-menu select2-dropdown-custom" role="menu" style="margin-top:0px;"></ul>
+                        </div>
+                    </div>
+
+                </div>
+
             </div>
       </header>      
       <!--header end-->
@@ -179,55 +184,145 @@
 	<script src="{% static 'js/sparklines.js' %}"></script>
 	<script src="{% static 'js/charts.js' %}"></script>
 	<script src="{% static 'js/jquery.slimscroll.min.js' %}"></script>
-  <script>
+    <script src="{% static 'js/jquery.typewatch.js' %}"></script>
+    <script>
 
-      //knob
-      $(function() {
-        $(".knob").knob({
-          'draw' : function () { 
-            $(this.i).val(this.cv + '%')
-          }
-        })
-      });
+        //knob
+        $(function () {
+            $(".knob").knob({
+                'draw': function () {
+                    $(this.i).val(this.cv + '%')
+                }
+            })
+        });
 
-      //carousel
-      $(document).ready(function() {
-          $("#owl-slider").owlCarousel({
-              navigation : true,
-              slideSpeed : 300,
-              paginationSpeed : 400,
-              singleItem : true
+        //carousel
+        $(document).ready(function () {
+            $("#owl-slider").owlCarousel({
+                navigation: true,
+                slideSpeed: 300,
+                paginationSpeed: 400,
+                singleItem: true
 
-          });
-      });
+            });
+        });
 
-      //custom select box
+        //custom select box
 
-      $(function(){
-          $('select.styled').customSelect();
-      });
-	  
-	  /* ---------- Map ---------- */
-	$(function(){
-	  $('#map').vectorMap({
-	    map: 'world_mill_en',
-	    series: {
-	      regions: [{
-	        values: gdpData,
-	        scale: ['#000', '#000'],
-	        normalizeFunction: 'polynomial'
-	      }]
-	    },
-		backgroundColor: '#eef3f7',
-	    onLabelShow: function(e, el, code){
-	      el.html(el.html()+' (GDP - '+gdpData[code]+')');
-	    }
-	  });
-	});
+        $(function () {
+            $('select.styled').customSelect();
+        });
 
+        /* ---------- Map ---------- */
+        $(function () {
+            $('#map').vectorMap({
+                map: 'world_mill_en',
+                series: {
+                    regions: [{
+                        values: gdpData,
+                        scale: ['#000', '#000'],
+                        normalizeFunction: 'polynomial'
+                    }]
+                },
+                backgroundColor: '#eef3f7',
+                onLabelShow: function (e, el, code) {
+                    el.html(el.html() + ' (GDP - ' + gdpData[code] + ')');
+                }
+            });
+        });
 
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
 
-  </script>
+            /* Anything that gets to the document will hide the dropdown */
+            $(document).click(function () {
+                $(".select2-dropdown-custom").fadeOut();
+                $('.nav-search-bar-spinner').hide();
+                $(this).tooltip('hide');
+            });
+
+            /* Clicks within the dropdown won't make it past the dropdown itself */
+            $(".select2-dropdown-custom").click(function (e) {
+                e.stopPropagation();
+            });
+
+            var navbar_input = $('.nav-search-bar-input');
+            navbar_input.on('keydown', function (e) {
+                if (e.keyCode == 27) // ESC
+                    $('.dropdown-menu').hide();
+            });
+
+            navbar_input.on('keydown', function (e) {
+                if (e.keyCode == 40) {// down arrow
+                    e.preventDefault();
+                    $(this).parent().find('.select2-dropdown-custom a:first').addClass('selected').focus();
+                }
+            });
+
+            navbar_input.typeWatch({
+                wait: 750,
+                highlight: false,
+                captureLength: 2,
+                callback: function (value) {
+
+                    $('.nav-search-bar-input').css('opacity', '0.97');
+                    $('.select2-results-custom').html("Searching...");
+                    $('.nav-search-bar-spinner').show();
+
+                    $.ajax({
+                        type: "GET",
+                        url: "/search/nav",
+                        dataType: "json",
+                        data: {
+                            "csrfmiddlewaretoken": '{{ csrf_token }}',
+                            "q": value
+                        },
+                        success: function (data) {
+
+                            var html = '';
+
+                            if (data.hasOwnProperty('ortholog')) {
+                                var ortholog = JSON.parse(data['ortholog']);
+
+                                $.each(ortholog, function (result_key, result_val) {
+                                    html += '<li>' +
+                                        '<a class="nav-search-result" href="/ortholog/' + result_val['id'] + '">' +
+                                        '<em class="fa fa-folder"></em> ' +
+                                        '<strong>' + result_val['symbol']
+                                });
+                            }
+                            if (data.empty) {
+                                html = "<li>No results found.</li>";
+                            }
+
+                            $('.select2-dropdown-custom').html(html).fadeIn().focus();
+                            $('.nav-search-bar-spinner').hide();
+                            $(".nav-search-result").on('keydown', function (e) {
+                                switch (e.which) {
+                                    case 40:
+                                        $(this).removeClass('selected');
+                                        $(this).parent().next().find('a').addClass('selected').focus();
+                                        break;
+                                    case 38:
+                                        $(this).removeClass('selected');
+                                        $(this).parent().prev().find('a').addClass('selected').focus();
+                                }
+                            });
+                        },
+                        error: function (e) {
+
+                            //---> Display JSON response
+                            console.log(e);
+
+                        }
+                    });
+
+                }
+            });
+        });
+
+    </script>
 
   </body>
 </html>

@@ -19,6 +19,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib import admin
 from db import views
 from contact.views import contact
+from db.search_autocomplete import search_nav
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -29,6 +30,7 @@ urlpatterns = [
     url(r'^ortholog/(?P<orthologid>\d+)/$', views.orthologs, name="ortholog"),
     url(r'^faculty/$', views.faculty, name="faculty"),
     url(r'^contact/$', contact, name="contact"),
+    url(r'^search/nav/$', search_nav, name="search_nav"),
 ]
 
 if settings.DEBUG:
