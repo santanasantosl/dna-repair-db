@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load staticfiles %}
 {% block  page_title %}
 
     <title>Faculty</title>
@@ -15,7 +15,7 @@
         <tbody>
         {% for professor in faculty %}
             <tr>
-                <td><img scr={% static professor.image_link %} width="100" height="80"/></td>
+                <td><img src="{% static professor.image_link %}" width="200" height="200"/></td>
                 <td><a href={{ professor.webpage_link }}>{{ professor.first_name }} {{ professor.last_name }}</a></td>
                 <td>{{ professor.research_description }}</td>
             </tr>
@@ -23,4 +23,4 @@
         </tbody>
     </table>
 
-{%  endblock %}
+{%  endblock %}"
